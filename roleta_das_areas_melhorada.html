@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roleta Matemática — Desafio das Áreas</title>
+<style>
+:root{--ink:#202b49;--muted:#65718b;--bg:#f5f6ff;--card:#fff;--line:#e7e9f5;--accent:#6558e8;--accent2:#ff668a;--good:#e5faef;--bad:#fff0ee}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,#e8e7ff,transparent 36%),linear-gradient(140deg,#f7fbff,#fff4f7);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink);min-height:100vh}
+main{max-width:1120px;margin:auto;padding:24px 16px 42px}.hero{text-align:center;margin-bottom:22px}.eyebrow{display:inline-block;background:#e7e5ff;color:#4d42bf;border-radius:999px;padding:6px 12px;font-size:.8rem;font-weight:800;letter-spacing:.04em}.hero h1{font-size:clamp(2rem,5vw,3.1rem);margin:10px 0 6px;letter-spacing:-.04em}.hero p{max-width:650px;margin:0 auto;color:var(--muted);line-height:1.55}
+.layout{display:grid;grid-template-columns:minmax(280px,.95fr) minmax(320px,1.05fr);gap:20px;align-items:start}.card{background:var(--card);border:1px solid #ffffff;border-radius:24px;padding:clamp(16px,3vw,24px);box-shadow:0 12px 35px #3a397512}.card h2{margin:0 0 14px;font-size:1.25rem}.wheel-wrap{position:relative;max-width:420px;margin:0 auto 12px}.wheel-wrap canvas{width:100%;height:auto;display:block;filter:drop-shadow(0 9px 10px #25264b18)}.pointer{position:absolute;top:-4px;left:50%;transform:translateX(-50%);z-index:2;width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-top:36px solid #202b49;filter:drop-shadow(0 3px 2px #0002)}
+button{font:inherit;font-weight:800;border:0;border-radius:13px;padding:12px 16px;cursor:pointer;transition:transform .15s,filter .15s,opacity .15s}button:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.03)}button:disabled{opacity:.48;cursor:not-allowed}.primary{background:linear-gradient(110deg,#6558e8,#8d65ee);color:white;width:100%;box-shadow:0 7px 16px #6558e833}.soft{background:#efefff;color:#4c42bb}.outline{background:white;border:1px solid var(--line);color:var(--ink)}.controls{display:grid;grid-template-columns:1fr auto;gap:9px;margin-top:10px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.stat{background:#f7f8ff;border:1px solid #eff0fb;border-radius:14px;padding:11px;text-align:center}.stat strong{display:block;font-size:1.35rem}.stat span{font-size:.78rem;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;background:#f0efff;color:#4d42bf;border-radius:999px;padding:6px 10px;font-size:.8rem;font-weight:800}.challenge-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.shape{font-size:1.55rem;font-weight:900;margin:12px 0 4px}.problem{font-size:1.03rem;line-height:1.55;margin:0 0 14px}.formula{background:linear-gradient(110deg,#f0efff,#f7f1ff);border:1px solid #e7e1ff;padding:14px;border-radius:15px;text-align:center;font-size:1.12rem;font-weight:850;margin:12px 0}.formula small{display:block;font-size:.75rem;color:#7166a7;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+label{display:block;font-weight:800;font-size:.9rem;margin:12px 0 6px}input,select{width:100%;font:inherit;padding:12px;border:1.5px solid #dfe3f0;border-radius:12px;background:#fff;color:var(--ink);outline:none}input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #6558e81a}.answer-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.feedback{min-height:68px;padding:12px 14px;margin-top:12px;border-radius:14px;background:#f7f8fc;border:1px solid #edf0f7;line-height:1.5}.feedback.good{background:var(--good);border-color:#c7f0d9;color:#17643c}.feedback.bad{background:var(--bad);border-color:#ffd8d2;color:#91382c}.steps{font-size:.9rem;margin-top:8px;color:var(--muted)}.formula-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.formula-card{border:1px solid var(--line);background:#fcfcff;border-radius:12px;padding:10px}.formula-card b{display:block;font-size:.88rem}.formula-card span{display:block;color:#5c6280;font-size:.84rem;margin-top:3px}.help{font-size:.84rem;line-height:1.5;color:var(--muted);margin:12px 0 0}.bottom{margin-top:18px;text-align:center;color:var(--muted);font-size:.83rem}
+@media(max-width:780px){.layout{grid-template-columns:1fr}.wheel-wrap{max-width:370px}}@media(max-width:390px){.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:span 2}.answer-row{grid-template-columns:1fr}.formula-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+<span class="eyebrow">🎓 APRENDER JOGANDO</span>
+<h1>Roleta Matemática</h1>
+<p>Gire, descubra a figura geométrica e resolva o desafio! Use as fórmulas de área, confira o passo a passo e acumule pontos.</p>
+</header>
+<div class="layout">
+<section class="card">
+<h2>🎡 Gire a roleta</h2>
+<div class="wheel-wrap"><div class="pointer"></div><canvas id="wheel" width="600" height="600" aria-label="Roleta de seis figuras geométricas"></canvas></div>
+<button class="primary" id="spin">✨ Girar e sortear desafio</button>
+<div class="controls"><button class="soft" id="reset">↻ Reiniciar pontos</button><button class="outline" id="hintBtn">💡 Dica</button></div>
+<div class="stats">
+<div class="stat"><strong id="score">0</strong><span>⭐ Pontos</span></div>
+<div class="stat"><strong id="played">0</strong><span>📝 Respondidos</span></div>
+<div class="stat"><strong id="accuracy">—</strong><span>🎯 Aproveitamento</span></div>
+</div>
+<p class="help">Regra: cada resposta certa vale 10 pontos. Você pode errar e aprender: o jogo mostra a conta completa depois de conferir.</p>
+</section>
+<section class="card" aria-live="polite">
+<div class="challenge-title"><h2>🧠 Seu desafio</h2><span class="pill" id="level">NÍVEL FÁCIL</span></div>
+<div class="shape" id="shapeName">Pronto para começar?</div>
+<p class="problem" id="problem">Clique em “Girar e sortear desafio” para receber uma questão.</p>
+<div class="formula"><small>Fórmula da área</small><span id="formula">A = ?</span></div>
+<label for="answer">Qual é a área? (unidades²)</label>
+<div class="answer-row"><input id="answer" type="number" step="any" placeholder="Digite sua resposta" disabled><button class="soft" id="check" disabled>Conferir</button></div>
+<div class="feedback" id="feedback">📌 Dica: área é a medida da superfície de uma figura.</div>
+<div class="controls"><button class="primary" id="next" disabled>Próximo desafio →</button><button class="outline" id="showSteps" disabled>Ver resolução</button></div>
+<div id="steps" class="steps" hidden></div>
+<h3 style="margin:22px 0 8px">📚 Cola das fórmulas</h3>
+<div class="formula-grid">
+<div class="formula-card"><b>◼ Quadrado</b><span>A = lado × lado</span></div>
+<div class="formula-card"><b>▰ Retângulo</b><span>A = base × altura</span></div>
+<div class="formula-card"><b>🔺 Triângulo</b><span>A = (base × altura) ÷ 2</span></div>
+<div class="formula-card"><b>⚪ Círculo</b><span>A = π × raio²</span></div>
+<div class="formula-card"><b>▱ Paralelogramo</b><span>A = base × altura</span></div>
+<div class="formula-card"><b>⏢ Trapézio</b><span>A = ((B + b) × altura) ÷ 2</span></div>
+</div>
+<p class="help">No círculo, use π ≈ 3,14. B é a base maior e b é a base menor do trapézio. Escreva a resposta em cm² quando as medidas estiverem em centímetros.</p>
+</section>
+</div>
+<p class="bottom">Roleta Matemática • Pratique no seu ritmo 🌈</p>
+</main>
+<script>
+const shapes=[
+{name:'Quadrado',color:'#ff7897',formula:'A = lado × lado',level:'FÁCIL',make(){let l=rand(2,12);return{problem:`Um quadrado tem lado de ${l} cm. Calcule sua área.`,answer:l*l,steps:`1. Fórmula: A = lado × lado\\n2. Substituindo: A = ${l} × ${l}\\n3. Resultado: A = ${l*l} cm²`}}},
+{name:'Retângulo',color:'#60c4ed',formula:'A = base × altura',level:'FÁCIL',make(){let b=rand(3,14),h=rand(2,10);return{problem:`Um retângulo tem base de ${b} cm e altura de ${h} cm. Qual é a área?`,answer:b*h,steps:`1. Fórmula: A = base × altura\\n2. Substituindo: A = ${b} × ${h}\\n3. Resultado: A = ${b*h} cm²`}}},
+{name:'Triângulo',color:'#ffcf69',formula:'A = (base × altura) ÷ 2',level:'MÉDIO',make(){let b=rand(4,16),h=rand(2,12);return{problem:`Um triângulo tem base de ${b} cm e altura de ${h} cm. Calcule a área.`,answer:b*h/2,steps:`1. Fórmula: A = (base × altura) ÷ 2\\n2. Substituindo: A = (${b} × ${h}) ÷ 2\\n3. Resultado: A = ${fmt(b*h/2)} cm²`}}},
+{name:'Círculo',color:'#78ddb0',formula:'A = π × raio²',level:'MÉDIO',make(){let r=rand(2,9);return{problem:`Um círculo tem raio de ${r} cm. Use π = 3,14 e calcule a área.`,answer:3.14*r*r,steps:`1. Fórmula: A = π × raio²\\n2. Substituindo: A = 3,14 × ${r}²\\n3. Potência: ${r}² = ${r*r}\\n4. Resultado: A = ${fmt(3.14*r*r)} cm²`}}},
+{name:'Paralelogramo',color:'#b5a0ff',formula:'A = base × altura',level:'MÉDIO',make(){let b=rand(3,14),h=rand(2,10);return{problem:`Um paralelogramo tem base de ${b} cm e altura de ${h} cm. Calcule a área.`,answer:b*h,steps:`1. Fórmula: A = base × altura\\n2. Substituindo: A = ${b} × ${h}\\n3. Resultado: A = ${b*h} cm²`}}},
+{name:'Trapézio',color:'#ffa66b',formula:'A = ((B + b) × altura) ÷ 2',level:'DIFÍCIL',make(){let B=rand(7,16),b=rand(3,B-2),h=rand(2,10);return{problem:`Um trapézio tem base maior de ${B} cm, base menor de ${b} cm e altura de ${h} cm. Calcule a área.`,answer:(B+b)*h/2,steps:`1. Fórmula: A = ((B + b) × altura) ÷ 2\\n2. Substituindo: A = ((${B} + ${b}) × ${h}) ÷ 2\\n3. Somando as bases: ${B} + ${b} = ${B+b}\\n4. Resultado: A = ${fmt((B+b)*h/2)} cm²`}}}
+];
+const canvas=document.getElementById('wheel'),ctx=canvas.getContext('2d');
+const cx=300,cy=300,r=276,slice=2*Math.PI/shapes.length;
+let rotation=0,spinning=false,current=null,score=0,played=0,correctCount=0,answered=false,showingHint=false;
+function drawWheel(){
+ ctx.clearRect(0,0,600,600);
+ shapes.forEach((s,i)=>{
+  const start=rotation+i*slice-Math.PI/2,end=start+slice;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=s.color;ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=6;ctx.stroke();
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(start+slice/2);ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillStyle='#202b49';ctx.font='800 22px system-ui,Arial';ctx.fillText(s.name,r-24,0);ctx.restore();
+ });
+ ctx.beginPath();ctx.arc(cx,cy,49,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#e9e8ff';ctx.lineWidth=5;ctx.stroke();
+ ctx.fillStyle='#6558e8';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='900 18px system-ui';ctx.fillText('GIRE!',cx,cy);
+}
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function fmt(n){return Number(n.toFixed(2)).toString().replace('.',',')}
+function spin(){
+ if(spinning)return;spinning=true;answered=false;showingHint=false;
+ ['spin','check','next','showSteps','hintBtn'].forEach(id=>document.getElementById(id).disabled=true);
+ document.getElementById('steps').hidden=true;document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='🎡 A roleta está girando...';
+ const start=rotation,extra=2*Math.PI*(5+Math.random()*3)+Math.random()*2*Math.PI,duration=2800,t0=performance.now();
+ function frame(now){const p=Math.min((now-t0)/duration,1),ease=1-Math.pow(1-p,4);rotation=start+extra*ease;drawWheel();if(p<1)requestAnimationFrame(frame);else{
+ spinning=false;document.getElementById('spin').disabled=false;document.getElementById('hintBtn').disabled=false;
+ // O ponteiro está no topo; a fatia indicada é calculada pelo ângulo final.
+ const a=((Math.PI*2-(rotation%(Math.PI*2)))%(Math.PI*2));const idx=Math.floor(a/slice)%shapes.length;newChallenge(shapes[idx]);
+ }}requestAnimationFrame(frame);
+}
+function newChallenge(shape){
+ const d=shape.make();current={...shape,...d};
+ document.getElementById('shapeName').textContent=shape.name;
+ document.getElementById('problem').textContent=d.problem;
+ document.getElementById('formula').textContent=shape.formula;
+ document.getElementById('level').textContent='NÍVEL '+shape.level;
+ document.getElementById('answer').value='';document.getElementById('answer').disabled=false;document.getElementById('check').disabled=false;
+ document.getElementById('next').disabled=true;document.getElementById('showSteps').disabled=true;
+ document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='✍️ Resolva a questão e confira sua resposta.';
+ document.getElementById('steps').hidden=true;document.getElementById('answer').focus();
+}
+function check(){
+ if(!current||answered)return;const val=parseFloat(document.getElementById('answer').value);
+ if(!Number.isFinite(val)){document.getElementById('feedback').textContent='Digite um número antes de conferir.';return}
+ answered=true;played++;const ok=Math.abs(val-current.answer)<=.05;const fb=document.getElementById('feedback');
+ if(ok){score+=10;correctCount++;fb.className='feedback good';fb.textContent='🎉 Acertou! Você ganhou 10 pontos. Muito bem!'}else{fb.className='feedback bad';fb.textContent=`Quase! A resposta correta é ${fmt(current.answer)} cm². Confira a resolução para aprender o cálculo.`}
+ document.getElementById('score').textContent=score;document.getElementById('played').textContent=played;document.getElementById('accuracy').textContent=Math.round(correctCount/played*100)+'%';
+ document.getElementById('answer').disabled=true;document.getElementById('check').disabled=true;document.getElementById('next').disabled=false;document.getElementById('showSteps').disabled=false;
+}
+function revealSteps(){if(!current)return;const el=document.getElementById('steps');el.textContent=current.steps;el.style.whiteSpace='pre-line';el.hidden=false}
+function hint(){if(!current){document.getElementById('feedback').textContent='Primeiro gire a roleta para sortear uma figura.';return}document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='💡 Fórmula: '+current.formula+' Lembre-se de substituir as letras pelos valores do enunciado.'}
+function reset(){score=0;played=0;correctCount=0;current=null;answered=false;document.getElementById('score').textContent='0';document.getElementById('played').textContent='0';document.getElementById('accuracy').textContent='—';document.getElementById('shapeName').textContent='Pronto para começar?';document.getElementById('problem').textContent='Clique em “Girar e sortear desafio” para receber uma questão.';document.getElementById('formula').textContent='A = ?';document.getElementById('level').textContent='NÍVEL FÁCIL';document.getElementById('answer').value='';document.getElementById('answer').disabled=true;document.getElementById('check').disabled=true;document.getElementById('next').disabled=true;document.getElementById('showSteps').disabled=true;document.getElementById('steps').hidden=true;document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='📌 Dica: área é a medida da superfície de uma figura.'}
+document.getElementById('spin').addEventListener('click',spin);document.getElementById('next').addEventListener('click',spin);document.getElementById('check').addEventListener('click',check);document.getElementById('showSteps').addEventListener('click',revealSteps);document.getElementById('hintBtn').addEventListener('click',hint);document.getElementById('reset').addEventListener('click',reset);document.getElementById('answer').addEventListener('keydown',e=>{if(e.key==='Enter')check()});
+drawWheel();
+</script>
+</body>
+</html>
